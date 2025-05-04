@@ -8,7 +8,7 @@ import pytz
 st.set_page_config(page_title="RaterHub History Analyzer", layout="wide")
 
 st.title("RaterHub History Analyzer")
-st.markdown("Upload your browser history XLSX file and specify the month to extract RaterHub tasks.")
+st.markdown("Upload your browser history CSV file and specify the month to extract RaterHub tasks.")
 
 # Month selection
 current_year = datetime.now().year
@@ -24,12 +24,12 @@ with col2:
     selected_year = st.selectbox("Select Year", [current_year, current_year-1])
 
 # File uploader
-uploaded_file = st.file_uploader("Upload browser history XLSX file", type=["xlsx"])
+uploaded_file = st.file_uploader("Upload browser history CSV file", type=["csv"])
 
 if uploaded_file is not None:
     try:
-        # Read the Excel file
-        df = pd.read_excel(uploaded_file)
+        # Read the CSV file
+        df = pd.read_csv(uploaded_file)
         
         # Check if required columns exist
         required_columns = ["order", "id", "date", "time", "title", "url"]
@@ -139,6 +139,7 @@ if uploaded_file is not None:
     except Exception as e:
         st.error(f"An error occurred: {e}")
         st.error("Please make sure your file has the correct format with columns: order, id, date, time, title, url")
+        st.error("If you're having issues with the CSV format, try checking that the date and time columns are properly formatted.")
 
 # Add information about the app
 st.sidebar.header("About")
@@ -152,7 +153,7 @@ st.sidebar.header("Instructions")
 st.sidebar.markdown(
     """
     1. Select the month and year to analyze
-    2. Upload your browser history Excel file (.xlsx)
+    2. Upload your browser history CSV file (.csv)
     3. The file should contain the following columns:
        - order
        - id
