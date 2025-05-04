@@ -95,6 +95,10 @@ if uploaded_file is not None:
                 
                 # Sort by date
                 result_df['Date (Pacific Time)'] = pd.to_datetime(result_df['Date (Pacific Time)'])
+                
+                # Remove duplicates, keeping the first occurrence of each Task ID
+                result_df = result_df.drop_duplicates(subset=['Task ID'])
+                
                 result_df = result_df.sort_values('Date (Pacific Time)')
                 result_df['Date (Pacific Time)'] = result_df['Date (Pacific Time)'].dt.strftime('%Y-%m-%d %H:%M:%S')
                 
@@ -114,7 +118,12 @@ if uploaded_file is not None:
                 # Display statistics
                 st.subheader("Statistics")
                 total_tasks = len(result_df)
-                st.write(f"Total RaterHub tasks: {total_tasks}")
+                st.write(f"Total unique RaterHub tasks: {total_tasks}")
+                total_visits = len(raterhub_df.dropna(subset=['task_id']))
+                st.write(f"Total RaterHub visits (including duplicates): {total_visits}")
+                
+                if total_visits > total_tasks:
+                    st.write(f"Removed {total_visits - total_tasks} duplicate task entries")
                 
                 if total_tasks > 0:
                     # Group by date and count tasks per day
